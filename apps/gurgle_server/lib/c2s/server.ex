@@ -1,4 +1,4 @@
-defmodule TcpServer do
+defmodule C2S.Server do
   require Logger
 
   def accept(port) do
@@ -20,28 +20,5 @@ defmodule TcpServer do
     {:ok, pid} = C2S.start_link(client)
     :ok = :gen_tcp.controlling_process(client, pid)
     loop_acceptor(socket)
-  end
-
-  defp serve(connection) do
-    {result, client} = case read_packet(connection) do
-      {:ok, data} ->
-        PacketProcessor.process_raw_packet(connection, data)
-      {:error, :timeout} ->
-        :gen_tcp.close(connection |> Connection.socket())
-        {:closed, nil}
-      _ -> {:error, connection}
-    end
-
-    if result == :ok do
-      serve(client)
-    end
-  end
-
-  defp read_packet(connection) do
-    :gen_tcp.recv(connection |> Connection.socket(), 0, Connection.timeout_milis)
-  end
-
-  defp write_packet(connection, data) do
-    :gen_tcp.send(connection |> Connection.socket(), data)
   end
 end

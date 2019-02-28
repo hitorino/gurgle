@@ -1,7 +1,8 @@
-defmodule ServerBusiness do
+defmodule GurgleServer do
   @moduledoc """
-  Documentation for ServerBusiness.
+  Documentation for GurgleServer.
   """
+  alias Gurgle.Connection
 
   @doc """
   Respond to client version handshake.
@@ -17,7 +18,7 @@ defmodule ServerBusiness do
   @doc """
   Respond to client auth method query.
   """
-  def dispatch(client = %Connection{state: :unauthed}, %{"id" => id, "cmd" => "query", "params" => %{"query" => "auth"}}) do
+  def dispatch(client = %Connection{state: :unauthed}, %{"id" => id, "cmd" => "query", "params" => %{"query" => "auth_method"}}) do
     send_packet(client, %{
       "id" => id,
       "params" => %{
@@ -38,7 +39,7 @@ defmodule ServerBusiness do
       "password" => password
       }
   }) do
-    case ServerBusiness.Authentication.plain(gurgle_id, password) do
+    case GurgleServer.Authentication.plain(gurgle_id, password) do
       :ok ->
         {username, _} = PacketProcessor.ID.gurgle_id(gurgle_id)
         client = %Connection{ client | authed: true, state: :authed, username: username}
@@ -61,6 +62,16 @@ defmodule ServerBusiness do
   @doc """
   Respond to client ping.
   """
+  def dispatch(client = %Connection{state: :authed}, %{"id" => id, "cmd" => "get_roster"}) do
+    send_packet(client, %{
+      "id" => id,
+      "cmd" => "pong"
+    })
+  end
+
+  @doc """
+  Respond to client ping.
+  """
   def dispatch(client = %Connection{authed: true}, %{"id" => id, "cmd" => "ping"}) do
     send_packet(client, %{
       "id" => id,
@@ -69,7 +80,7 @@ defmodule ServerBusiness do
   end
 
   @doc "Catch-all function to ignore invalid packets"
-  def dispatch(client, packet) do
+  def dispatch(client, _packet) do
     {:ok, client}
   end
 

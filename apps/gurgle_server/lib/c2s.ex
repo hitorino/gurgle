@@ -1,5 +1,6 @@
 defmodule C2S do
   use GenServer
+  alias Gurgle.Connection
 
   ## Client API
   def start_link(socket) do
@@ -25,7 +26,7 @@ defmodule C2S do
   end
 
   def handle_call({:forward_message, packet_obj}, _from, connection) do
-    case ServerBusiness.send_packet(connection, packet_obj) do
+    case GurgleServer.send_packet(connection, packet_obj) do
       {:ok, connection} -> {:reply, :ok, connection}
       {:error, reason} -> {:reply, reason, connection}
     end
@@ -44,7 +45,7 @@ defmodule C2S do
     end
   end
 
-  def handle_info({:tcp_closed, socket}, connection) do
+  def handle_info({:tcp_closed, _socket}, connection) do
     IO.inspect("Socket has been closed")
     {:stop, :normal, connection}
   end

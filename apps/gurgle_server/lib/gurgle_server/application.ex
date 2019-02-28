@@ -1,4 +1,4 @@
-defmodule TcpServer.Application do
+defmodule GurgleServer.Application do
   # See https://hexdocs.pm/elixir/Application.html
   # for more information on OTP Applications
   @moduledoc false
@@ -10,12 +10,12 @@ defmodule TcpServer.Application do
     children = [
       # Starts a worker by calling: TcpServer.Worker.start_link(arg)
       # {TcpServer.Worker, arg},
-      Supervisor.child_spec({Task, fn -> TcpServer.accept(port()) end}, restart: :permanent)
+      Supervisor.child_spec({Task, fn -> C2S.Server.accept(port()) end}, restart: :permanent)
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
-    opts = [strategy: :one_for_one, name: TcpServer.Supervisor]
+    opts = [strategy: :one_for_one, name: C2S.Server.Supervisor]
     Supervisor.start_link(children, opts)
   end
 

@@ -1,4 +1,5 @@
-defmodule Connection do
+defmodule Gurgle.Connection do
+  alias Gurgle.Connection
   @timeout_secs 4*60
 
   def timeout_milis do

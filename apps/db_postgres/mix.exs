@@ -1,9 +1,9 @@
-defmodule TcpServer.MixProject do
+defmodule DBPostgres.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :tcp_server,
+      app: :db_postgres,
       version: "0.1.0",
       build_path: "../../_build",
       config_path: "../../config/config.exs",
@@ -18,8 +18,8 @@ defmodule TcpServer.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger],
-      mod: {TcpServer.Application, []}
+      extra_applications: [:logger, :ecto_sql, :postgrex],
+      mod: {DBPostgres.Application, []}
     ]
   end
 
@@ -29,8 +29,10 @@ defmodule TcpServer.MixProject do
       # {:dep_from_hexpm, "~> 0.3.0"},
       # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"},
       # {:sibling_app_in_umbrella, in_umbrella: true},
-      {:packet_processor, in_umbrella: true},
-      {:server_business, in_umbrella: true}
+      {:ecto_sql, "~> 3.0"},
+      {:postgrex, ">= 0.0.0"},
+      {:comeonin, "~> 4.1"},
+      {:bcrypt_elixir, "~> 1.1"},
     ]
   end
 end

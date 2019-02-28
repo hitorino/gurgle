@@ -1,11 +1,12 @@
 defmodule PacketProcessor do
   require Logger
+  alias Gurgle.Connection
   @moduledoc """
   Documentation for PacketProcessor.
   """
 
   def process_packet(client, packet_obj) do
-    ServerBusiness.dispatch(client, packet_obj)
+    GurgleServer.dispatch(client, packet_obj)
   end
 
   def process_raw_packet(client, data) do

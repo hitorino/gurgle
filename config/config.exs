@@ -15,3 +15,10 @@ import_config "../apps/*/config/config.exs"
 #       level: :info,
 #       format: "$date $time [$level] $metadata$message\n",
 #       metadata: [:user_id]
+
+config :db_postgres, DBPostgres.Repo,
+  database: "gurgle",
+  hostname: "localhost"
+
+config :gurgle_server,
+  domain: "hitorino.moe"
